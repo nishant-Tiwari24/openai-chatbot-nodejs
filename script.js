@@ -2,7 +2,7 @@ const chatInput = document.querySelector(".chat-input textarea");
 const sendChatbtn = document.querySelector(".chat-input span");
 const chatbox = document.querySelector(".chatbox")
 
-let API_KEY = "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";
+let API_KEY = "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";
 let userMessage;
 
 const generateResponse = () => {
@@ -19,7 +19,15 @@ const generateResponse = () => {
             messages: [{role: "user", content: userMessage}],
         })
     }
+
+    fetch(API_URL,requestOptions).then(res => res.json()).then(data => {
+        console.log(data);
+    }).catch((error) => {
+        console.log(error)
+    })
 }
+
+
 
 const createChatli = (message, className) => {
     const chatli = document.createElement("li");
