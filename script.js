@@ -5,7 +5,6 @@ const chatInput = document.querySelector(".chat-input textarea");
 const sendChatBtn = document.querySelector(".chat-input span");
 
 let userMessage = null;
-const API_KEY = "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"; 
 const inputInitHeight = chatInput.scrollHeight;
 
 const rateLimitDelay = 1000;
@@ -27,7 +26,7 @@ const generateResponse = (chatElement) => {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${API_KEY}`
+            "Authorization": `Bearer ${process.env.API_KEY}`
         },
         body: JSON.stringify({
             model: "gpt-3.5-turbo",
@@ -47,34 +46,24 @@ const generateResponse = (chatElement) => {
 }
 
 const handleChat = () => {
-    userMessage = chatInput.value.trim(); // Get user-entered message and remove extra whitespace
+    userMessage = chatInput.value.trim();
     if (!userMessage) return;
-
-    // Check if enough time has passed since the last API request
     const currentTime = new Date().getTime();
     const timeSinceLastRequest = currentTime - lastRequestTime;
 
     if (timeSinceLastRequest < rateLimitDelay) {
-        // Display an error message or handle the rate-limiting situation
         console.error("Rate limit exceeded. Please wait before sending another request.");
         return;
     }
-
-    // Clear the input textarea and set its height to default
     chatInput.value = "";
     chatInput.style.height = `${inputInitHeight}px`;
-
-    // Append the user's message to the chatbox
     chatbox.appendChild(createChatLi(userMessage, "outgoing"));
     chatbox.scrollTo(0, chatbox.scrollHeight);
 
     setTimeout(() => {
-        // Display "Thinking..." message while waiting for the response
         const incomingChatLi = createChatLi("Thinking...", "incoming");
         chatbox.appendChild(incomingChatLi);
         chatbox.scrollTo(0, chatbox.scrollHeight);
-
-        // Update the last request time before making the API call
         lastRequestTime = currentTime;
 
         generateResponse(incomingChatLi);
@@ -82,19 +71,10 @@ const handleChat = () => {
 }
 
 chatInput.addEventListener("input", () => {
-    // Adjust the height of the input textarea based on its content
     chatInput.style.height = `${inputInitHeight}px`;
     chatInput.style.height = `${chatInput.scrollHeight}px`;
 });
 
-chatInput.addEventListener("keydown", (e) => {
-    // If Enter key is pressed without Shift key and the window 
-    // width is greater than 800px, handle the chat
-    if (e.key === "Enter" && !e.shiftKey && window.innerWidth > 800) {
-        e.preventDefault();
-        handleChat();
-    }
-});
 
 sendChatBtn.addEventListener("click", handleChat);
 closeBtn.addEventListener("click", () => document.body.classList.remove("show-chatbot"));
