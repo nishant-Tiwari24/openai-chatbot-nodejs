@@ -19,6 +19,7 @@ const createChatLi = (message, className) => {
     return chatLi;
 }
 
+const API_KEY = "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";
 const generateResponse = (chatElement) => {
     const API_URL = "https://api.openai.com/v1/chat/completions";
     const messageElement = chatElement.querySelector("p");
@@ -26,7 +27,7 @@ const generateResponse = (chatElement) => {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${process.env.API_KEY}`
+            "Authorization": `Bearer ${API_KEY}`
         },
         body: JSON.stringify({
             model: "gpt-3.5-turbo",
